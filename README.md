@@ -1,82 +1,105 @@
-# LR-LL_Parser_Algorithms
-LEFT AND RIGHT MOST DERIVATION
+<h1 align="center">README</h1>
 
-You are asked to write a Python program for left and right most derivation. <br/>
-For this purpose, your program should take three inputs. First is “ll.txt” which contains LL(1)<br/>
-parsing table for left most derivation. Second is “lr.txt” which contains LR(1) parsing table for<br/>
-right most derivation. Third is “input.txt” which contains input strings (could be more than 2)<br/>
-you should process with their corresponding tables. You should use the following variables to<br/>
-store file names.<br/>
-FILE_LL = “ll.txt”<br/>
-FILE_LR = “lr.txt”<br/>
-FILE_INPUT = “input.txt”<br/>
-These variables contains names of the files you must read. Their default value should<br/>
-be the values given here, not different or personalized. In addition, you should NOT use<br/>
-global addressing for these files (e.g. C:\user\student\Desktop\input.txt). You should<br/>
-only use their names so that they are searched on local folder only.<br/>
-Example files for ll.txt, lr.txt and input.txt are also given. You can examine them and change<br/>
-them to test your software. Your program will be graded by using different parsing tables and<br/>
-inputs, so make sure that your program works for all parsing tables and inputs, not just one.<br/>
-Assuming your program takes the given example files as input, you are expected to generate an<br/>
-output on console (not in a file) like given on the page below (the text given inside parenthesis<br/>
-is for information only, you are not required to print it out but you can if you wish):<br/>
-<hr/>
-Read LL(1) parsing table from file ll.txt.<br/>
-Read LR(1) parsing table from file lr.txt.<br/>
-Read input strings from file input.txt.<br/>
-Processing input string id+id*id$ for LL(1) parsing table.<br/><br/>
-NO | STACK | INPUT | ACTION<br/>
-1 | $ | id+id*id$ | E->TA<br/>
-2 | $AT | id+id*id$ | T->FB<br/>
-3 | $ABF | id+id*id$ | F->id<br/>
-4 | $ABid | id+id*id$ | Match and remove id<br/>
-5 | $AB | +id*id$ | B->ϵ<br/>
-6 | $A | +id*id$ | A->+TA<br/>
-7 | $AT+ | +id*id$ | Match and remove +<br/>
-8 | $AT | id*id$ | T->FB<br/>
-9 | $ABF | id*id$ | F->id<br/>
-10 | $ABid | id*id$ | Match and remove id<br/>
-11 | $AB | *id$ | B->*FB<br/>
-12 | $ABF* | *id$ | Match and remove *<br/>
-13 | $ABF | id$ | F->id<br/>
-14 | $ABid | id$ | Match and remove id<br/>
-15 | $AB | $ | B->ϵ<br/>
-16 | $A | $ | A->ϵ<br/>
-17 | $ | $ | ACCEPTED<br/><br/>
-Processing input string acd$ for LR(1) parsing table.<br/>
-NO | STATE STACK | READ | INPUT | ACTION<br/>
-1 | 1 | a | acd$ | Shift to state 3<br/>
-2 | 1 3 | c | acd$ | Shift to state 6<br/>
-3 | 1 3 6 | d | acd$ | Shift to state 5<br/>
-4 | 1 3 6 5 | $ | acd$ | Reverse B->d<br/>
-5 | 1 3 6 | B | acB$ | Shift to state 7<br/>
-6 | 1 3 6 7 | $ | acB$ | Reverse B->cB<br/>
-7 | 1 3 | B | aB$ | Shift to state 4<br/>
-8 | 1 3 4 | $ | aB$ | Reverse S->aB<br/>
-9 | 1 | S | S$ | Shift to state 2<br/>
-10 | 1 2 | $ | S$ | ACCEPTED<br/><br/>
-Processing input string +id*id$ for LL(1) parsing table.<br/>
-NO | STACK | INPUT | ACTION<br/>
-1 | $ | +id*id$ | E->TA<br/>
-2 | $AT | +id*id$ | REJECTED<br/> (T does not have an action/step for +)<br/><br/>
-Processing input string cd$ for LR(1) parsing table.<br/>
-NO | STATE STACK | READ | INPUT | ACTION<br/>
-1 | 1 | c | cd$ | REJECTED (State 1 does not have an action/step for c)<br/><br/>
-<hr/>
-You should try to make your output as orderly as possible but do not spend days or weeks just<br/>
-for small aesthetic improvements to the console output.<br/>
-Correct execution and output will be very important for your grade, if your program does not<br/>
-work correctly, your grade will be very low. In addition, your program should NOT import any<br/>
-libraries or external packages, adding these and using alternative and easier methods and<br/>
-algorithms for this assignment, will make your grade zero. If you really believe that this<br/>
-assignment is not possible to do without external libraries, discuss it with me on class forums or<br/>
-lab sessions.<br/><br/>
-As you may have seen, there is a special character at your input files called Epsilon (ϵ). Make<br/>
-sure your program detects this character correctly. Uppercase and lowercase version of this<br/>
-character is shown in the links below.<br/>
-https://www.compart.com/en/unicode/U+03B5<br/>
-https://www.compart.com/en/unicode/U+03F5<br/>
-Your input files uses spaces to make it more readable and table like, however this is not a<br/>
-requirement. You should eliminate empty spaces when you read these files because input strings<br/>
-“E->TA” and “E -> T A” are functionally equivalent in this context and you should consider<br/>
-them as the same too.<br/>
+<p align="center">This README file serves as a generator for Markdown formatted READMEs. It contains parsers for LL(1) and LR(1) grammars along with input processing capabilities.</p>
+
+## Table of Contents
+- [LL(1) Parser](#ll1-parser)
+  - [LL Grammar File Parsing](#ll-grammar-file-parsing)
+  - [LL Parsing Algorithm](#ll-parsing-algorithm)
+  - [LL Parsing Process](#ll-parsing-process)
+- [LR(1) Parser](#lr1-parser)
+  - [LR Grammar File Parsing](#lr-grammar-file-parsing)
+  - [LR Parsing Algorithm](#lr-parsing-algorithm)
+  - [LR Parsing Process](#lr-parsing-process)
+- [Input Processing](#input-processing)
+- [Running the Parser](#running-the-parser)
+
+## LL(1) Parser
+
+### LL Grammar File Parsing
+
+The LL grammar file is read from the file 📄 "ll.txt". The grammar rules are extracted and stored in a dictionary called `ll_table`. The non-terminals are stored in a list called `ll_non_terminals`.
+
+### LL Parsing Algorithm
+
+The LL parsing algorithm is implemented using the `ll_parser` function. The input string is parsed according to the LL(1) parsing table stored in `ll_table`. The algorithm follows the steps below:
+
+1. Initialize the stack with the end-of-input marker 💲.
+2. Print the initial stack, input, and action.
+3. Reverse the input string to handle right-to-left parsing.
+4. Iterate until the stack is empty:
+   - Get the top of the stack.
+   - Get the current input symbol.
+   - If the top matches the current input symbol, remove them from the stack and input.
+   - If there is a production rule for the top and current input symbol in the LL(1) parsing table, apply the production rule by replacing the top with the right-hand side of the rule.
+   - If the production rule is "ϵ" (epsilon), continue to the next iteration.
+   - If none of the above conditions are met, the input string is rejected.
+5. If the stack is empty and the input string is fully consumed, the input string is accepted.
+
+### LL Parsing Process
+
+The LL parsing process is as follows:
+
+1. Read LL(1) parsing table from file 📄 "ll.txt".
+2. Read input strings from file 📄 "input.txt".
+3. For each input string:
+   - Parse the input string using the LL parsing algorithm.
+   - Print the parsing steps, including the stack, input, and actions taken.
+   - If the input string is accepted, mark it as ✅ accepted.
+   - If the input string is rejected, mark it as ❌ rejected.
+
+## LR(1) Parser
+
+### LR Grammar File Parsing
+
+The LR grammar file is read from the file 📄 "lr.txt". The parsing table is extracted and stored in a dictionary called `lr_table`. The LR states, actions, and gotos are stored in separate lists called `lr_state`, `lr_action`, and `lr_goto`, respectively.
+
+### LR Parsing Algorithm
+
+The LR parsing algorithm is implemented using the `lr_parser` function. The input string is parsed according to the LR(1) parsing table stored in `lr_table`. The algorithm follows the steps below:
+
+1. Initialize the state stack with the initial state.
+2. Reverse the input string to handle right-to-left parsing.
+3. Iterate until the input stack is empty:
+   - Get the current input symbol.
+   - If the current state and input symbol have an action in the LR(1) parsing table, perform the action:
+     - If the action is a shift operation, change to the new state and shift the input symbol.
+     - If the action is a reduce operation, replace the reduced symbols with the left-hand side of the production rule.
+     - If the action is "ACCEPT," the input string is accepted.
+   - If there is no action for the current state and input symbol, the input string is rejected.
+4. If the input stack is empty and there are no more actions to perform, the input string is rejected.
+
+### LR Parsing Process
+
+The LR parsing process is as follows:
+
+1. Read LR(1) parsing table from file 📄 "lr.txt".
+2. Read input strings from file 📄 "input.txt".
+3. For each input string:
+   - Parse the input string using the LR parsing algorithm.
+   - Print the parsing steps, including the state stack, read symbol, input, and actions taken.
+   - If the input string is accepted, mark it as ✅ accepted.
+   - If the input string is rejected, mark it as ❌ rejected.
+
+## Input Processing
+
+The input strings are read from the file 📄 "input.txt". Each input string is processed based on its type (LL or LR) and passed to the corresponding parser.
+
+### LL Input Processing
+
+The LL input strings are processed using the LL parsing algorithm. The input string is split into tokens based on the defined grammar rules. The LL parsing algorithm is then applied to parse the input string.
+
+### LR Input Processing
+
+The LR input strings are processed using the LR parsing algorithm. The input string is reversed to handle right-to-left parsing. The LR parsing algorithm is then applied to parse the input string.
+
+## Running the Parser
+
+To run the parser:
+
+1. Ensure that the LL grammar file is named 📄 "ll.txt", the LR grammar file is named 📄 "lr.txt", and the input file is named 📄 "input.txt".
+2. Execute the code.
+3. The parser will read the grammar files and input file and perform the LL(1) and LR(1) parsing processes.
+4. The parsing steps and results will be displayed for each input string.
+
+Please refer to the code for detailed implementation and additional information.
